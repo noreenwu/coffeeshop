@@ -6,6 +6,7 @@ from flask_cors import CORS
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
+from sqlalchemy.exc import DatabaseError
 
 app = Flask(__name__)
 setup_db(app)
@@ -16,7 +17,19 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+#db_drop_and_create_all()
+
+
+def get_drink_shorts(drinks):
+
+    drink_list = []
+
+    for dr in drinks:
+        drink_list.append({ dr.id: { 'title' : dr.title,
+                                     'recipe' : dr.recipe } })
+
+    return drink_list
+
 
 ## ROUTES
 '''
@@ -27,6 +40,23 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks')
+def get_drinks():
+
+    try:
+        drinks = Drink.query.all()
+    except DatabaseError:
+        print("Could not get drinks from the database")
+        abort(422)
+
+    if len(drinks) > 0:
+        drink_shorts = get_drink_shorts(drinks)
+        return jsonify ({ 'drinks': drink_shorts})        
+    else:
+        print ("empty list of drinks")
+        return jsonify ({ 'success': True,
+                          'drinks': []
+                        })
 
 
 '''
@@ -37,6 +67,9 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks-detail')
+def get_drinks_detail():
+    return jsonify ({ 'drinks-detail': 'detail'})
 
 
 '''
@@ -88,6 +121,51 @@ def unprocessable(error):
                     }), 422
 
 '''
+@TODO implement error handler for 404
+    error handler should conform to general task above 
+'''
+@app.errorhandler(404)
+def resource_not_found(error):
+    return jsonify({
+                    "success": False, 
+                    "error": 404,
+                    "message": "resource not found"
+                    }), 404
+
+
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
+                        raise AuthError({
+                            'code': 'invalid_claims',
+                            'description': 'Permissions not included in JWT.'
+                        }, 400)
+
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
+        }, 403)
+    return True
+
+
+@app.errorhandler(403)
+def resource_not_found(error):
+    return jsonify({
+                    "success": False, 
+                    "error": 403,
+                    "message": "Unauthorized"
+                    }), 403
+
+
+@app.errorhandler(400)
+def cannot_process(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "Bad request"
+    }), 400
+    
+'''
 @TODO implement error handlers using the @app.errorhandler(error) decorator
     each error handler should return (with approprate messages):
              jsonify({
@@ -96,11 +174,6 @@ def unprocessable(error):
                     "message": "resource not found"
                     }), 404
 
-'''
-
-'''
-@TODO implement error handler for 404
-    error handler should conform to general task above 
 '''
 
 
