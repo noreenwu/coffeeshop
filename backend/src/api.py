@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
+from functools import wraps
 from flask_cors import CORS
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
@@ -19,6 +20,73 @@ CORS(app)
 '''
 #db_drop_and_create_all()
 
+
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
+                        raise AuthError({
+                            'code': 'invalid_claims',
+                            'description': 'Permissions not included in JWT.'
+                        }, 400)
+
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
+        }, 403)
+    return True
+
+
+def get_token_auth_header():
+    """Obtains the Access Token from the Authorization Header
+    """
+    auth = request.headers.get('Authorization', None)
+    if not auth:
+        print ("authorization header missing")
+        abort(401)
+        # raise AuthError({
+        #     'code': 'authorization_header_missing',
+        #     'description': 'Authorization header is expected.'
+        # }, 401)
+
+    parts = auth.split()
+    if parts[0].lower() != 'bearer':
+        print ("authorization header must start with Bearer")
+        abort(401)
+        # raise AuthError({
+        #     'code': 'invalid_header',
+        #     'description': 'Authorization header must start with "Bearer".'
+        # }, 401)
+
+    elif len(parts) == 1:
+        print ("Token not found")
+        abort(401)
+        # raise AuthError({
+        #     'code': 'invalid_header',
+        #     'description': 'Token not found.'
+        # }, 401)
+
+    elif len(parts) > 2:
+        print ("Invalid header: authorization header must be bearer token")
+        abort(401)
+        # raise AuthError({
+        #     'code': 'invalid_header',
+        #     'description': 'Authorization header must be bearer token.'
+        # }, 401)
+
+    token = parts[1]
+    return token
+
+def requires_auth(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        token = get_token_auth_header()
+        try:
+            payload = verify_decode_jwt(token)
+        except:
+            abort(401)
+        return f(payload, *args, **kwargs)
+
+    return wrapper
 
 def get_drink_shorts(drinks):
 
@@ -68,6 +136,7 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail')
+@requires_auth
 def get_drinks_detail():
     return jsonify ({ 'drinks-detail': 'detail'})
 
@@ -81,7 +150,10 @@ def get_drinks_detail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks', methods=['POST'])
+@requires_auth
+def add_drink():
+    return jsonify({"success": True}), 200
 
 '''
 @TODO implement endpoint
@@ -94,7 +166,10 @@ def get_drinks_detail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks/<int:id>', methods=['PATCH'])
+@requires_auth
+def update_drink():
+    return jsonify({"success": True}), 200
 
 '''
 @TODO implement endpoint
@@ -106,6 +181,10 @@ def get_drinks_detail():
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth
+def delete_drink():
+    return jsonify({"success": True}), 200
 
 
 ## Error Handling
@@ -133,20 +212,6 @@ def resource_not_found(error):
                     }), 404
 
 
-def check_permissions(permission, payload):
-    if 'permissions' not in payload:
-                        raise AuthError({
-                            'code': 'invalid_claims',
-                            'description': 'Permissions not included in JWT.'
-                        }, 400)
-
-    if permission not in payload['permissions']:
-        raise AuthError({
-            'code': 'unauthorized',
-            'description': 'Permission not found.'
-        }, 403)
-    return True
-
 
 @app.errorhandler(403)
 def resource_not_found(error):
@@ -164,7 +229,7 @@ def cannot_process(error):
         "error": 400,
         "message": "Bad request"
     }), 400
-    
+
 '''
 @TODO implement error handlers using the @app.errorhandler(error) decorator
     each error handler should return (with approprate messages):
@@ -181,3 +246,10 @@ def cannot_process(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
+@app.errorhandler(401)
+def cannot_process(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "Authorization failed"
+    }), 401
