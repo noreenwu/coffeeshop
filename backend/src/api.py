@@ -21,72 +21,34 @@ CORS(app)
 #db_drop_and_create_all()
 
 
-def check_permissions(permission, payload):
-    if 'permissions' not in payload:
-                        raise AuthError({
-                            'code': 'invalid_claims',
-                            'description': 'Permissions not included in JWT.'
-                        }, 400)
+# def check_permissions(permission, payload):
+#     if 'permissions' not in payload:
+#                         raise AuthError({
+#                             'code': 'invalid_claims',
+#                             'description': 'Permissions not included in JWT.'
+#                         }, 400)
 
-    if permission not in payload['permissions']:
-        raise AuthError({
-            'code': 'unauthorized',
-            'description': 'Permission not found.'
-        }, 403)
-    return True
+#     if permission not in payload['permissions']:
+#         raise AuthError({
+#             'code': 'unauthorized',
+#             'description': 'Permission not found.'
+#         }, 403)
+#     return True
 
 
-def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
-    """
-    auth = request.headers.get('Authorization', None)
-    if not auth:
-        print ("authorization header missing")
-        abort(401)
-        # raise AuthError({
-        #     'code': 'authorization_header_missing',
-        #     'description': 'Authorization header is expected.'
-        # }, 401)
 
-    parts = auth.split()
-    if parts[0].lower() != 'bearer':
-        print ("authorization header must start with Bearer")
-        abort(401)
-        # raise AuthError({
-        #     'code': 'invalid_header',
-        #     'description': 'Authorization header must start with "Bearer".'
-        # }, 401)
 
-    elif len(parts) == 1:
-        print ("Token not found")
-        abort(401)
-        # raise AuthError({
-        #     'code': 'invalid_header',
-        #     'description': 'Token not found.'
-        # }, 401)
+# def requires_auth(f):
+#     @wraps(f)
+#     def wrapper(*args, **kwargs):
+#         token = get_token_auth_header()
+#         try:
+#             payload = verify_decode_jwt(token)
+#         except:
+#             abort(401)
+#         return f(payload, *args, **kwargs)
 
-    elif len(parts) > 2:
-        print ("Invalid header: authorization header must be bearer token")
-        abort(401)
-        # raise AuthError({
-        #     'code': 'invalid_header',
-        #     'description': 'Authorization header must be bearer token.'
-        # }, 401)
-
-    token = parts[1]
-    return token
-
-def requires_auth(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        token = get_token_auth_header()
-        try:
-            payload = verify_decode_jwt(token)
-        except:
-            abort(401)
-        return f(payload, *args, **kwargs)
-
-    return wrapper
+#     return wrapper
 
 def get_drink_shorts(drinks):
 
@@ -108,7 +70,7 @@ def get_drink_shorts(drinks):
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks')
+@app.route('/drinks', methods=['GET'])
 def get_drinks():
 
     try:
@@ -135,9 +97,10 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks-detail')
-@requires_auth
+@app.route('/drinks-detail', methods=['GET'])
+@requires_auth('get:drinks-detail')
 def get_drinks_detail():
+    print ("hi")
     return jsonify ({ 'drinks-detail': 'detail'})
 
 
@@ -151,7 +114,7 @@ def get_drinks_detail():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-@requires_auth
+# @requires_auth
 def add_drink():
     return jsonify({"success": True}), 200
 
@@ -167,8 +130,8 @@ def add_drink():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:id>', methods=['PATCH'])
-@requires_auth
-def update_drink():
+# @requires_auth
+def update_drink(id):
     return jsonify({"success": True}), 200
 
 '''
@@ -182,8 +145,8 @@ def update_drink():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:id>', methods=['DELETE'])
-@requires_auth
-def delete_drink():
+# @requires_auth
+def delete_drink(id):
     return jsonify({"success": True}), 200
 
 
