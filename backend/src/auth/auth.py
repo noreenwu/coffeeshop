@@ -121,6 +121,7 @@ def check_permissions(permission, payload):
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
 def verify_decode_jwt(token):
+    print ("verify_decode_jwt token is ", token)
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
@@ -150,6 +151,7 @@ def verify_decode_jwt(token):
                 issuer='https://' + AUTH0_DOMAIN + '/'
             )
 
+            print ("rsa_key is ", rsa_key)
             return payload
 
         except jwt.ExpiredSignatureError:
@@ -162,7 +164,7 @@ def verify_decode_jwt(token):
             print("Unable to parse authentication token")
             abort(400)
 
-    print("Unable to find the appropriate key")
+    print("Unable to find the appropriate key", rsa_key)
     abort(400)
 
 
@@ -182,9 +184,6 @@ def requires_auth(permission=''):
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
-            print("payload ", payload)
-            print("permission ", permission)
-
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 

@@ -114,8 +114,8 @@ def get_drinks_detail(f):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-# @requires_auth
-def add_drink():
+@requires_auth('post:drinks')
+def add_drink(f):
     return jsonify({"success": True}), 200
 
 '''
@@ -130,8 +130,8 @@ def add_drink():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:id>', methods=['PATCH'])
-# @requires_auth
-def update_drink(id):
+@requires_auth('patch:drinks')
+def update_drink(f, id):
     return jsonify({"success": True}), 200
 
 '''
@@ -145,8 +145,8 @@ def update_drink(id):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:id>', methods=['DELETE'])
-# @requires_auth
-def delete_drink(id):
+@requires_auth('delete:drinks')
+def delete_drink(f, id):
     return jsonify({"success": True}), 200
 
 
