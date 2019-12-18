@@ -50,6 +50,15 @@ CORS(app)
 
 #     return wrapper
 
+def get_drink_longs(drinks):
+
+    drink_list = []
+
+    for dr in drinks:
+        drink_list.append(dr.format())
+
+    return drink_list
+
 def get_drink_shorts(drinks):
 
     drink_list = []
@@ -79,14 +88,9 @@ def get_drinks():
         print("Could not get drinks from the database")
         abort(422)
 
-    if len(drinks) > 0:
-        drink_shorts = get_drink_shorts(drinks)
-        return jsonify ({ 'drinks': drink_shorts})        
-    else:
-        print ("empty list of drinks")
-        return jsonify ({ 'success': True,
-                          'drinks': []
-                        })
+    drink_shorts = get_drink_shorts(drinks)
+    return jsonify ({ 'success': True,
+                      'drinks': drink_shorts})
 
 
 '''
@@ -101,7 +105,17 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(f):
     print ("hi")
-    return jsonify ({ 'drinks-detail': 'detail'})
+    try:
+        drinks = Drink.query.all()
+    except DatabaseError:
+        print("Could not get long drinks from the database")
+        abort(422)
+
+    drink_longs = get_drink_longs(drinks)
+    return jsonify({'success': True, 
+                    'drinks-detail': drink_longs})
+
+    # return jsonify ({ 'drinks-detail': []})
 
 
 '''
