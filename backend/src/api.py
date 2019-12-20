@@ -191,7 +191,7 @@ def delete_drink(f, id):
     # get the drink
     the_drink = Drink.query.filter_by(id=id).one_or_none()
     if the_drink is None:
-        abort(400)
+        abort(404)
 
     try:
         the_drink.delete()
@@ -199,7 +199,7 @@ def delete_drink(f, id):
         print("an error occurred while trying to delete the drink")
         abort(422)
 
-    return jsonify({"success": True}), 200
+    return jsonify({"success": True, "delete": id}), 200
 
 
 ## Error Handling
