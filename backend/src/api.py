@@ -172,6 +172,32 @@ def add_drink(f):
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def update_drink(f, id):
+    title = ''
+    recipe = ''
+    if 'title' in request.get_json():
+        title = request.get_json()['title']
+    if 'recipe' in request.get_json():
+        recipe = request.get_json()['recipe']
+
+    if title is None and recipe is None:
+        abort(400)
+        
+    # get the drink
+    the_drink = Drink.query.filter_by(id=id).one_or_none()
+    if the_drink is None:
+        abort(404)
+
+    if title is not None:
+        the_drink.title = title
+    if recipe is not None:
+        the_drink.recipe = recipe
+
+    try:
+        the_drink.update()
+    except:
+        print("Could not update the drink")
+        abort(422)
+
     return jsonify({"success": True}), 200
 
 '''
