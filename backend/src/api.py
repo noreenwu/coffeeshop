@@ -19,6 +19,9 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
 #db_drop_and_create_all()
+# newDrink = Drink('Root Beer Float', '[{"color":"#cfcfcf", "name":"Icecream", "parts": 1}, {"color":"#59291a", "name":"Root Beer", "parts": 3}]')
+# db.session.add(newDrink)
+# db.session.commit()
 
 
 # def check_permissions(permission, payload):
@@ -130,6 +133,29 @@ def get_drinks_detail(f):
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def add_drink(f):
+
+    if not request.json:
+        abort(400)
+
+    title = request.get_json()['title']
+    recipe = request.get_json()['recipe']
+
+    if title is None or recipe is None:
+        abort(400)
+
+    print ("title ", title)
+    print ("recipe ", recipe)
+
+    # r = json.loads(recipe)
+    print ("parts ", recipe[0]['parts'])
+    print ("color", recipe[0]['color'])
+    new_drink = Drink(title=title, recipe='a recipe')
+
+    try:
+        new_drink.insert()
+    except DatabaseError:
+        abort(422)
+
     return jsonify({"success": True}), 200
 
 '''
