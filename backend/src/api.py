@@ -53,6 +53,11 @@ CORS(app)
 
 #     return wrapper
 
+
+# class mydict(dict):
+#     def __str__(self):
+#         return json.dumps(self)
+
 def get_drink_longs(drinks):
 
     drink_list = []
@@ -149,7 +154,11 @@ def add_drink(f):
     # r = json.loads(recipe)
     print ("parts ", recipe[0]['parts'])
     print ("color", recipe[0]['color'])
-    new_drink = Drink(title=title, recipe='a recipe')
+    recipe_str = str(recipe)
+    recipe_dquot = recipe_str.replace("\'", "\"")
+    print ("recipe is ", recipe_dquot)
+
+    new_drink = Drink(title=title, recipe=recipe_dquot)
 
     try:
         new_drink.insert()
