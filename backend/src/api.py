@@ -187,6 +187,18 @@ def update_drink(f, id):
 @app.route('/drinks/<int:id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(f, id):
+
+    # get the drink
+    the_drink = Drink.query.filter_by(id=id).one_or_none()
+    if the_drink is None:
+        abort(400)
+
+    try:
+        the_drink.delete()
+    except DatabaseError:
+        print("an error occurred while trying to delete the drink")
+        abort(422)
+
     return jsonify({"success": True}), 200
 
 
