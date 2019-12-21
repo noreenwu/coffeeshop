@@ -79,6 +79,11 @@ def get_drink_shorts(drinks):
     return drink_list
 
 
+def fix_recipe_quotes(recipe):
+    recipe_str = str(recipe)
+    return recipe_str.replace("\'", "\"")
+
+
 ## ROUTES
 '''
 @TODO implement endpoint
@@ -113,7 +118,6 @@ def get_drinks():
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(f):
-    print ("hi")
     try:
         drinks = Drink.query.all()
     except DatabaseError:
@@ -123,8 +127,6 @@ def get_drinks_detail(f):
     drink_longs = get_drink_longs(drinks)
     return jsonify({'success': True, 
                     'drinks': drink_longs})
-
-    # return jsonify ({ 'drinks-detail': []})
 
 
 '''
@@ -155,18 +157,23 @@ def add_drink(f):
     # r = json.loads(recipe)
     print ("parts ", recipe[0]['parts'])
     print ("color", recipe[0]['color'])
-    recipe_str = str(recipe)
-    recipe_dquot = recipe_str.replace("\'", "\"")
-    print ("recipe is ", recipe_dquot)
+    # recipe_str = str(recipe)
+    # recipe_dquot = recipe_str.replace("\'", "\"")
+    # print ("recipe is ", recipe_dquot)
 
-    new_drink = Drink(title=title, recipe=recipe_dquot)
+    new_drink = Drink(title=title, recipe=fix_recipe_quotes(recipe))
 
     try:
         new_drink.insert()
     except DatabaseError:
         abort(422)
 
-    return jsonify({"success": True}), 200
+    try:
+        drink_just_inserted = Drink.query.filter_by(title=title).one_or_none()
+    except DatabaseError:
+        abort(422)
+
+    return jsonify({"success": True, "drinks": [{ "id": drink_just_inserted.id, "title": title, "recipe": recipe}] }), 200
 
 '''
 @TODO implement endpoint
@@ -202,6 +209,13 @@ def update_drink(f, id):
     if recipe is not None:
         the_drink.recipe = recipe
 
+    print ("updating drink title is ", title)
+
+    # recipe_str = str(recipe)
+    # recipe_dquot = recipe_str.replace("\'", "\"")
+    # recipe_dquot = fix_recipe_quotes(recipe)
+    the_drink.recipe = fix_recipe_quotes(recipe)
+    print ("   and recipe is ", recipe_dquot)
     try:
         the_drink.update()
     except:
