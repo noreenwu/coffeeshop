@@ -63,7 +63,8 @@ def get_drink_longs(drinks):
     drink_list = []
 
     for dr in drinks:
-        drink_list.append(dr.format())
+        # drink_list.append(dr.format())
+        drink_list.append(dr.long())
 
     return drink_list
 
@@ -72,9 +73,9 @@ def get_drink_shorts(drinks):
     drink_list = []
 
     for dr in drinks:
-        drink_list.append({ dr.id: { 'title' : dr.title,
-                                     'recipe' : dr.recipe } })
-
+        # drink_list.append({ dr.id: { 'title' : dr.title,
+        #                              'recipe' : dr.recipe } })
+        drink_list.append(dr.short())
     return drink_list
 
 
@@ -121,7 +122,7 @@ def get_drinks_detail(f):
 
     drink_longs = get_drink_longs(drinks)
     return jsonify({'success': True, 
-                    'drinks-detail': drink_longs})
+                    'drinks': drink_longs})
 
     # return jsonify ({ 'drinks-detail': []})
 
