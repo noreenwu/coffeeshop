@@ -215,7 +215,7 @@ def update_drink(f, id):
     # recipe_dquot = recipe_str.replace("\'", "\"")
     # recipe_dquot = fix_recipe_quotes(recipe)
     the_drink.recipe = fix_recipe_quotes(recipe)
-    print ("   and recipe is ", recipe_dquot)
+
     try:
         the_drink.update()
     except:
