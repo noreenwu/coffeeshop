@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e8ad44ee-7536-4901-913c-46e718d56d9f",
+		"_postman_id": "86cf98f9-e26e-4074-9666-bd15e15460a0",
 		"name": "udacity-fsnd-udaspicelatte",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -170,7 +170,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "barista",
@@ -379,7 +380,8 @@
 						]
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "manager",
@@ -473,6 +475,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJFUkZNRGN6TVRsRFFVWkZPRU0yUmprelFVVTFNRVUxUkRoRk1FTXpOVUUzUmpZMk9EQTRNdyJ9.eyJpc3MiOiJodHRwczovL3d1ZGV2LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZGVjNDE2NGZmOWM5YzBjYzFlZjcwOTAiLCJhdWQiOiJkcmluayIsImlhdCI6MTU3NjgxMTIyMywiZXhwIjoxNTc2ODE4NDIzLCJhenAiOiJzb2FMUjBYeklJUnNLd2liak9BWUFIeVl4VFZjVkgyYiIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmRyaW5rcyIsImdldDpkcmlua3MtZGV0YWlsIiwicGF0Y2g6ZHJpbmtzIiwicG9zdDpkcmlua3MiXX0.gaTuFcUShY2RrHxslHQ26p1t9vSB3asMBZVgk_ww1bfxHWfEACnqpac4BQufP-0pfF_jW2kbyhU2XGUinF8FgiVpFTX-HX7cRGnSgL8vCIwa2lu7UtTR3BFMl-s9o7I5BAYtNhwUEZoPYLgAvaIvDleT9EdBJ-J3VAccwr-M9qLDM7zRWbnUg4WknpFLiGi113feLeWhWKMCyIIVC-R5vdBSxZKRn92oi5-N9OC_zfY9k4zve1ZK-P_Zplza72BUO69iwbSljnuhyhFffh95qvWtoJNoTsijxHA4RP-rKJX8JMBWyjdhH8oPQgk1wUGSdi1VWU90a9nXtOs1zNI0fA",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -484,7 +496,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Water3\",\n    \"recipe\": {\n        \"name\": \"Water\",\n        \"color\": \"blue\",\n        \"parts\": 1\n    }\n}"
+							"raw": "{\n    \"title\": \"Water3\",\n    \"recipe\": [{\n        \"name\": \"Water\",\n        \"color\": \"blue\",\n        \"parts\": 1\n    }, {\n    \t\"name\": \"minerals\",\n    \t\"color\": \"clear\",\n    \t\"parts\": 1\n    }\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{host}}/drinks",
@@ -493,6 +505,18 @@
 							],
 							"path": [
 								"drinks"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "NY Drink",
+									"disabled": true
+								},
+								{
+									"key": "recipe",
+									"value": "lemon, sugar, water",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -610,7 +634,8 @@
 						]
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
@@ -642,5 +667,6 @@
 			"value": "localhost:5000",
 			"type": "string"
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
