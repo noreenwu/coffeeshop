@@ -376,6 +376,14 @@ DELETE /drinks/int:id
 
 
 
+## Front-end
+
+The Angular front-end is configured to work with the backend and authentication
+pieces in the file frontend/src/environments/environment.ts
 
 
+Aside from these configuration settings, edits were made to disable edit
+function buttons inside the recipe edit screens; baristas may view
+recipes but they are unable to save changes, so it is misleading to
+suggest that they can.
 
