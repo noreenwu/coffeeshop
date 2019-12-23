@@ -121,12 +121,6 @@ def add_drink(f):
     if title is None or recipe is None:
         abort(400)
 
-    # print ("title ", title)
-    # print ("recipe ", recipe)
-
-    # print ("parts ", recipe[0]['parts'])
-    # print ("color", recipe[0]['color'])
-
     new_drink = Drink(title=title, recipe=fix_recipe_quotes(recipe))
 
     try:
@@ -179,11 +173,6 @@ def update_drink(f, id):
     if recipe is not None:
         the_drink.recipe = recipe
 
-    # print ("updating drink title is ", title)
-
-    # recipe_str = str(recipe)
-    # recipe_dquot = recipe_str.replace("\'", "\"")
-    # recipe_dquot = fix_recipe_quotes(recipe)
     the_drink.recipe = fix_recipe_quotes(recipe)
 
     try:
