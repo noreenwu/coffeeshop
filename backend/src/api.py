@@ -192,7 +192,11 @@ def update_drink(f, id):
         print("Could not update the drink")
         abort(422)
 
-    return jsonify({"success": True}), 200
+
+    return jsonify({"success": True,
+                    "drinks": [{"id": id,
+                                "title": title,
+                                "recipe": recipe}]}), 200
 
 
 '''
