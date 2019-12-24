@@ -7,15 +7,16 @@
 
 This Coffee Shop application allows any visitor to view the drinks menu,
 baristas to view the drinks menu and the recipes for the drinks, and
-shop managers to view the menu, the recipes, make changes to the recipes, and
-to add new drinks and delete drinks completely from the menu.
+shop managers to view the menu and the recipes, and also make changes to the recipes,
+to add new drinks and to delete drinks from the menu.
 
-The access control for these functions was implemented with auth0.com,
-where users, their roles and their permissions are defined.
+The access control for these functions was implemented in Flask; the users,
+their roles and their permissions are defined at auth0.com, which issues
+jwt's with appropriate permissions on successful login.
 
-The endpoints, defined in Flask, require permissions for any action that
-cannot be performed by the public; users who authenticate with these
+Most endpoints require specific permissions; users who authenticate with these
 defined permissions are allowed access to the endpoints.
+
 
 ## Running the Application
 
@@ -79,8 +80,11 @@ The Manager role is able to "get:drinks-detail" (view drink recipes), "post:drin
 (create new drinks), "patch:drinks" (modify existing drinks), and "delete:drinks"
 (delete drinks).
 
-Viewing just the list of drinks and associated graphic does not require any
-special permissions. This is the default view for anyone viewing the site with
+noreenwu@gmail.com was given Manager privileges while noreen@wufried.com
+was given Barist privileges.
+
+Viewing just the list of drinks with associated graphic does not require any
+special permissions. This is the default menu view for anyone viewing the site with
 no credentials.
 
 
@@ -378,7 +382,7 @@ DELETE /drinks/int:id
 
 ## Front-end
 
-The Angular front-end is configured to work with the backend and authentication
+The Ionic front-end is configured to work with the backend and authentication
 pieces in the file frontend/src/environments/environment.ts
 
 
@@ -389,12 +393,20 @@ suggest that they can.
 
 ## Authors
 
-Angular front-end, partial Flask server, SQLAlchemy module, sqlite database
-by Udacity FSND
+Ionic front-end, partial Flask server, SQLAlchemy module, sqlite database
+schema by Udacity FSND
 
-Minor changes to Angular front-end, front-end configuration, completion
-of Flask server endpoints, authentication and authorization of
-endpoints by Noreen Wu
+Minor changes to Ionic front-end, front-end configuration to coordinate
+with Flask backend, completion of Flask server endpoints, authentication and
+authorization of endpoints using Flask and Auth0 by Noreen Wu
+
+
+## Acknowledgements
+
+I would like to thank my family for allowing me to create Uda-Spice Latte Cafe
+drinks on Christmas Eve Eve, instead of making a flourless chocolate cake
+like I was supposed to.
+
 
 
 
