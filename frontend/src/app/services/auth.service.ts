@@ -72,6 +72,10 @@ export class AuthService {
     this.token = '';
     this.payload = null;
     this.set_jwt();
+    let link = 'https://';
+    link += this.url + '.auth0.com';
+    link += '/logout'
+    window.open(link); 
   }
 
   can(permission: string) {
