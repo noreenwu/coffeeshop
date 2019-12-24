@@ -10,7 +10,7 @@
      style="align-items: center; display: flex; flex-direction: column; cursor: pointer;" 
      *ngFor="let drink of Object.keys(drinks.items)"
      (click)="openForm(drinks.items[drink])">
-        <ion-card-header>
+        <ion-card-header class='menu-drink-title'>
           <ion-card-title>{{drinks.items[drink].title}}</ion-card-title>
         </ion-card-header>
       
