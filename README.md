@@ -387,3 +387,15 @@ function buttons inside the recipe edit screens; baristas may view
 recipes but they are unable to save changes, so it is misleading to
 suggest that they can.
 
+## Authors
+
+Angular front-end, partial Flask server, SQLAlchemy module, sqlite database
+by Udacity FSND
+
+Minor changes to Angular front-end, front-end configuration, completion
+of Flask server endpoints, authentication and authorization of
+endpoints by Noreen Wu
+
+
+
+
