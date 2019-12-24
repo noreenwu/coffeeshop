@@ -31,19 +31,19 @@ backend directory.
 Set up your [python virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/), 
 and then obtain the dependencies by running:
 
-   pip install -r requirements.txt
+    pip install -r requirements.txt
 
 The sqlite database is empty to begin with, so if you'd like to pre-load a couple
 of drinks, then cd into backend/src/database to run:
 
-   python loaddb.py
+    python loaddb.py
 
 
 Then, from backend/src start up the backend server:
 
-   export FLASK=api.py
-   export FLASK_ENV=development
-   flask run
+    export FLASK=api.py
+    export FLASK_ENV=development
+    flask run
 
 To verify that the backend is working, go to http://127.0.0.1:5000 in your browser.
 
@@ -57,11 +57,11 @@ The endpoints may be tested by running Postman on the collection udacity-fsnd-ud
 
 From the front-end folder (/frontend), use npm to install the dependencies:
 
-   npm install
+    npm install
 
 Then start the front-end service:
 
-   npm start
+    ionic serve
 
 The front-end can be accessed at http://localhost:8100
 
