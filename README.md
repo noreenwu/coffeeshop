@@ -41,7 +41,7 @@ of drinks, then cd into backend/src/database to run:
 
 Then, from backend/src start up the backend server:
 
-    export FLASK=api.py
+    export FLASK_APP=api.py
     export FLASK_ENV=development
     flask run
 
