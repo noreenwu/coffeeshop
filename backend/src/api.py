@@ -161,17 +161,19 @@ def update_drink(f, id):
     if title is None and recipe is None:
         abort(400)
 
+    print("the recipe is ", recipe)
     # get the drink
     the_drink = Drink.query.filter_by(id=id).one_or_none()
     if the_drink is None:
         abort(404)
 
-    if title is not None:
+    if title and title is not None:
         the_drink.title = title
-    if recipe is not None:
-        the_drink.recipe = recipe
 
-    the_drink.recipe = fix_recipe_quotes(recipe)
+    if recipe and recipe is not None:
+        the_drink.recipe = recipe
+        the_drink.recipe = fix_recipe_quotes(recipe)
+        # only fix quotes in recipe if a new recipe was supplied as an update
 
     try:
         the_drink.update()
