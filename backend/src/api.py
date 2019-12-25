@@ -161,7 +161,6 @@ def update_drink(f, id):
     if title is None and recipe is None:
         abort(400)
 
-    print("the recipe is ", recipe)
     # get the drink
     the_drink = Drink.query.filter_by(id=id).one_or_none()
     if the_drink is None:
